@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import ItemTable from "./styled";
 
@@ -17,7 +17,7 @@ function Item({ label, name, open, high, low, close, volume }) {
   return (
     <ItemTable.tableCellRow>
       <ItemTable.starImgCell>
-        <img src="https://www.gopax.co.kr/images/icons/star-gray.svg" />
+        <img src="https://www.gopax.co.kr/images/icons/star-gray.svg" alt="star-img" />
       </ItemTable.starImgCell>
       <ItemTable.coinNameCell>
         <div>{label}</div>
@@ -34,7 +34,6 @@ function Item({ label, name, open, high, low, close, volume }) {
 
 function ItemList() {
   const items = useSelector(state => state.coin.items);
-  console.log('items', items);
 
   return (
     <ItemTable>

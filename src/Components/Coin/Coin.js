@@ -1,29 +1,24 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import ItemList from "../ItemList/ItemList";
-import { getStatsWithAssets, filterItems } from "../../actions";
+import { getStatsWithAssets } from "../../actions";
 import Page from "./styled";
 
 function Coin() {
   const [state, setState] = useState({
-    loading: true,
     inputValue: "",
   });
-  const { loading, inputValue } = state;
+  const { inputValue } = state;
   const filteringStr = useSelector(state => state.coin.filteringStr);
   const dispatch = useDispatch();
 
   const callApi = useCallback(async () => {
     try {
       await dispatch(getStatsWithAssets());
-      setState(state => ({ 
-        ...state,
-        loading: false,
-      }));
     } catch(err) {
       console.error(err);
     }
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     callApi();
@@ -32,13 +27,13 @@ function Coin() {
   const onFilter = useCallback(event => {
     const { id } = event.target;
     dispatch({ type: 'FILTER_ITEMS', filteringStr: id });
-  }, [state]);
+  }, [dispatch]);
 
   const onChange = useCallback(event => {
     const { value } = event.target;
     setState({ ...state, inputValue: value });
     dispatch({ type: 'ON_CHANGE_ITEMS', inputValue: value });
-  }, [state]);
+  }, [state, dispatch]);
 
   return (
     <Page>

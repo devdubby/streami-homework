@@ -1,5 +1,5 @@
 import React from 'react';
-import Coin from "./Coin/Coin";
+import Coin from "./Components/Coin/Coin";
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import reducer from "./reducers";

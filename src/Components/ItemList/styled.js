@@ -56,6 +56,7 @@ const TableData = styled.td`
 
 ItemTable.starImgCell = styled.td`
   text-align: center;
+  cursor: pointer;
 `;
 
 ItemTable.coinNameCell = styled(TableData)`

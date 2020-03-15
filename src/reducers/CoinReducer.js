@@ -32,6 +32,21 @@ const checkUpdatedTime = (items, stats) => {
   return newItems;
 }
 
+const filteringItems = (filteringStr, originItems) => {
+  let newItems = []
+  if(filteringStr === "favorites") {
+    const items = JSON.parse(localStorage.getItem("favorites"));
+    if(items) {
+      items.forEach(item => {
+        newItems = newItems.concat(originItems[item]);
+      });
+    }
+  } else {
+    newItems = Object.values(originItems).filter(item => item.currencyUnit.indexOf(filteringStr) !== -1);
+  }
+  return newItems;
+}
+
 export default (state = initialState, action) => {
   switch(action.type) {
     case SET_STATS_WITH_ASSETS:
@@ -43,10 +58,10 @@ export default (state = initialState, action) => {
         items: Object.values(formatedItems).filter(item => item.currencyUnit.indexOf(state.filteringStr) !== -1)
       }
     case FILTER_ITEMS:
-      const filteringItems = Object.values(state.originItems).filter(item => item.currencyUnit.indexOf(action.filteringStr) !== -1);
+      const filterdItems = filteringItems(action.filteringStr, state.originItems);
       return {
         ...state,
-        items: filteringItems,
+        items: filterdItems,
         filteringStr: action.filteringStr,
       }
     case ON_CHANGE_ITEMS:
@@ -59,7 +74,6 @@ export default (state = initialState, action) => {
       }
     case SET_STATS:
       const newItems = [...checkUpdatedTime(state.items, action.stats)];
-      console.log(newItems);
       return {
         ...state,
         stats: action.stats,

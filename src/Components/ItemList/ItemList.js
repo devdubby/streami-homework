@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import ItemTable from "./styled";
 
-function Item({ label, name, open, high, low, close, volume }) {
+const Item = React.memo(function Item({ label, name, open, high, low, close, volume, onFavorite, isFavorite }) {
   const formatPrice = number => {
     return number < 1 ? number : number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
@@ -11,13 +11,18 @@ function Item({ label, name, open, high, low, close, volume }) {
   rate = rate === 0 ? rate : rate.toFixed(2);
 
   const formatTradeVolume = () => {
-    return Math.floor(volume);
+    const money = volume * close;
+    return Math.floor(money);
   };
+
+  useEffect(() => {
+    console.log(name);
+  }, []);
 
   return (
     <ItemTable.tableCellRow>
-      <ItemTable.starImgCell>
-        <img src="https://www.gopax.co.kr/images/icons/star-gray.svg" alt="star-img" />
+      <ItemTable.starImgCell onClick={() => onFavorite(name)}>
+        <img src={`https://www.gopax.co.kr/images/icons/star-${isFavorite ? "mango" : "gray"}.svg`} alt="star-img" />
       </ItemTable.starImgCell>
       <ItemTable.coinNameCell>
         <div>{label}</div>
@@ -30,10 +35,19 @@ function Item({ label, name, open, high, low, close, volume }) {
       <ItemTable.restCell>{formatTradeVolume()}</ItemTable.restCell>
     </ItemTable.tableCellRow>
   );
-}
+});
 
 function ItemList() {
   const items = useSelector(state => state.coin.items);
+  let favoriteName = JSON.parse(localStorage.getItem("favorites"));
+  const [favorites, setFavorites] = useState(favoriteName);
+
+  const onFavorite = useCallback(name => {
+    if(favoriteName && favoriteName.indexOf(name) !== -1) return;
+    favoriteName = !favoriteName ? [name] : favoriteName.concat(name)
+    localStorage.setItem("favorites", JSON.stringify(favoriteName));
+    setFavorites(favoriteName.concat(name))
+  }, []);
 
   return (
     <ItemTable>
@@ -59,6 +73,8 @@ function ItemList() {
             low={item.low}
             close={item.close}
             volume={item.volume}
+            onFavorite={onFavorite}
+            isFavorite={favoriteName && favoriteName.indexOf(item.name) !== -1}
           />
         ))}
       </tbody>

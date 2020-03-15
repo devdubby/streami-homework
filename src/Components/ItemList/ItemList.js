@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import ItemTable from "./styled";
 
-function Item({ name, open, high, low, close, volume }) {
+function Item({ label, name, open, high, low, close, volume }) {
   const formatPrice = number => {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
@@ -19,18 +19,23 @@ function Item({ name, open, high, low, close, volume }) {
       <ItemTable.starImgCell>
         <img src="https://www.gopax.co.kr/images/icons/star-gray.svg" />
       </ItemTable.starImgCell>
-      <ItemTable.coinNameCell>{name}</ItemTable.coinNameCell>
+      <ItemTable.coinNameCell>
+        <div>{label}</div>
+        <ItemTable.name>{name}</ItemTable.name>
+      </ItemTable.coinNameCell>
       <ItemTable.priceCell>{formatPrice(close)}</ItemTable.priceCell>
       <ItemTable.changeRateCell rate={rate}>{rate}%</ItemTable.changeRateCell>
-      <ItemTable.highPriceCell>{formatPrice(high)}</ItemTable.highPriceCell>
-      <ItemTable.lowPriceCell>{formatPrice(low)}</ItemTable.lowPriceCell>
-      <ItemTable.volumeCell>{formatTradeVolume()}</ItemTable.volumeCell>
+      <ItemTable.restCell>{formatPrice(high)}</ItemTable.restCell>
+      <ItemTable.restCell>{formatPrice(low)}</ItemTable.restCell>
+      <ItemTable.restCell>{formatTradeVolume()}</ItemTable.restCell>
     </ItemTable.tableCellRow>
   );
 }
 
 function ItemList() {
-  const stats = useSelector(state => state.coin.stats);
+  const items = useSelector(state => state.coin.items);
+  console.log('items', items);
+
   return (
     <ItemTable>
       <thead>
@@ -45,15 +50,16 @@ function ItemList() {
         </ItemTable.tableHeadRow>
       </thead>
       <tbody>
-        {stats.map(stat => (
+        {items && items.length > 0 && items.map(item => (
           <Item
-            key={stat.name}
-            name={stat.name}
-            open={stat.open}
-            high={stat.high}
-            low={stat.low}
-            close={stat.close}
-            volume={stat.volume}
+            key={item.name}
+            label={item.label}
+            name={item.name}
+            open={item.open}
+            high={item.high}
+            low={item.low}
+            close={item.close}
+            volume={item.volume}
           />
         ))}
       </tbody>
@@ -61,4 +67,4 @@ function ItemList() {
   );
 }
 
-export default ItemList;
+export default React.memo(ItemList);

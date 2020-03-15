@@ -1,23 +1,24 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import ItemList from "../ItemList/ItemList";
-import { getStatsAndAssets } from "../../actions";
+import { getStatsWithAssets, filterItems } from "../../actions";
 import Page from "./styled";
 
 function Coin() {
   const [state, setState] = useState({
     loading: true,
-    activeIndex: 1,
+    inputValue: "",
   });
-  const { loading, activeIndex } = state;
+  const { loading, inputValue } = state;
+  const filteringStr = useSelector(state => state.coin.filteringStr);
   const dispatch = useDispatch();
 
   const callApi = useCallback(async () => {
     try {
-      await dispatch(getStatsAndAssets());
+      await dispatch(getStatsWithAssets());
       setState(state => ({ 
         ...state,
-        loading: false 
+        loading: false,
       }));
     } catch(err) {
       console.error(err);
@@ -28,38 +29,39 @@ function Coin() {
     callApi();
   }, [callApi]);
 
-  const onFilter = useCallback(activeIndex => {
-    setState({
-      ...state,
-      activeIndex,
-    });
+  const onFilter = useCallback(event => {
+    const { id } = event.target;
+    dispatch({ type: 'FILTER_ITEMS', filteringStr: id });
   }, [state]);
 
-  const stats = useSelector(state => state.coin.stats);
-  const assets = useSelector(state => state.coin.assets);
+  const onChange = useCallback(event => {
+    const { value } = event.target;
+    setState({ ...state, inputValue: value });
+    dispatch({ type: 'ON_CHANGE_ITEMS', inputValue: value });
+  }, [state]);
 
   return (
     <Page>
       <Page.Header>
         <Page.FilterBox>
-          <Page.FilterBtn active={activeIndex === 0} onClick={() => onFilter(0)}>
+          <Page.FilterBtn active={filteringStr === "FAVORITE"} onClick={onFilter}>
             <Page.imgBox>
-              <Page.img src={`https://www.gopax.co.kr/images/icons/star-${activeIndex === 0 ? "mango" : "gray"}.svg`} />
+              <Page.img src={`https://www.gopax.co.kr/images/icons/star-${filteringStr === "FAVORITE" ? "mango" : "gray"}.svg`} />
               <Page.FavoriteText>관심</Page.FavoriteText>
             </Page.imgBox>
           </Page.FilterBtn>
-          <Page.FilterBtn active={activeIndex === 1} onClick={() => onFilter(1)}>KRW</Page.FilterBtn>
-          <Page.FilterBtn active={activeIndex === 2} onClick={() => onFilter(2)}>BTC</Page.FilterBtn>
-          <Page.FilterBtn active={activeIndex === 3} onClick={() => onFilter(3)}>ETH</Page.FilterBtn>
+          <Page.FilterBtn id="KRW" active={filteringStr === "KRW"} onClick={onFilter}>KRW</Page.FilterBtn>
+          <Page.FilterBtn id="BTC" active={filteringStr === "BTC"} onClick={onFilter}>BTC</Page.FilterBtn>
+          <Page.FilterBtn id="ETH" active={filteringStr === "ETH"} onClick={onFilter}>ETH</Page.FilterBtn>
         </Page.FilterBox>
         <Page.FilterInputBox>
           <Page.MagnifierImgBox>
             <Page.MagnifierImg src="https://www.gopax.co.kr/images/icons/magnifier.svg" />
           </Page.MagnifierImgBox>
-          <Page.InputBox placeholder="이름/심볼 검색" />
+          <Page.InputBox value={inputValue} onChange={onChange} placeholder="이름/심볼 검색" />
         </Page.FilterInputBox>
       </Page.Header>
-      {!loading && <ItemList />}
+      <ItemList />
     </Page>
   );
 };

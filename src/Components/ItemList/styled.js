@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const ItemTable = styled.table`
   width: 70%;
-  /* border-collapse: collapse; */
+  border-collapse: collapse;
 `;
 
 ItemTable.tableHeadRow = styled.tr`
@@ -27,6 +27,11 @@ ItemTable.coinNameHead = styled(TableHeading)`
   text-align: left;
 `;
 
+ItemTable.name = styled.div`
+  font-size: 11px;
+  color: #a0a5af;
+`;
+
 ItemTable.boxHead = styled(TableHeading)`
   width: 17%;
 `;
@@ -38,6 +43,7 @@ ItemTable.middleHead = styled(TableHeading)`
 ItemTable.tableCellRow = styled.tr`
   background-color: #1d212b;
   height: 6vh;
+  border-bottom: 2px solid #181b14;
 `;
 
 const TableData = styled.td`
@@ -45,6 +51,7 @@ const TableData = styled.td`
   padding-right: 20px;
   text-align: right;
   width: 15%;
+  color: #e2e3e4;
 `;
 
 ItemTable.starImgCell = styled.td`
@@ -53,26 +60,16 @@ ItemTable.starImgCell = styled.td`
 
 ItemTable.coinNameCell = styled(TableData)`
   text-align: left;
-  color: #e2e3e4;
+  padding: 10px 20px 10px 0px;
 `;
 
-ItemTable.priceCell = styled(TableData)`
-  color: #e2e3e4;
-`;
+ItemTable.priceCell = styled(TableData)``;
 
 ItemTable.changeRateCell = styled(TableData)`
   color: ${({rate}) => rate > 0 ? "#3dcc88" : (rate < 0 ? "#f25430" : "#e2e3e4")};
 `;
 
-ItemTable.highPriceCell = styled(TableData)`
-  color: #a0a5af;
-`;
-
-ItemTable.lowPriceCell = styled(TableData)`
-  color: #a0a5af;
-`;
-
-ItemTable.volumeCell = styled(TableData)`
+ItemTable.restCell = styled(TableData)`
   color: #a0a5af;
 `;
 

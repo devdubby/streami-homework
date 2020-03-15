@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #171B23;
 }
 
 code {
@@ -17,6 +18,4 @@ code {
   align-items: center;
   flex-direction: column;
   padding: 10px;
-  background-color: #171B23;
-  height: 100vh;
 }

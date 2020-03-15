@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import ItemList from "../ItemList/ItemList";
-import { getStatsWithAssets } from "../../actions";
+import { getStatsWithAssets, getStats } from "../../actions";
 import Page from "./styled";
 
 function Coin() {
@@ -22,6 +22,7 @@ function Coin() {
 
   useEffect(() => {
     callApi();
+    return () => clearInterval(timeId);
   }, [callApi]);
 
   const onFilter = useCallback(event => {
@@ -34,6 +35,10 @@ function Coin() {
     setState({ ...state, inputValue: value });
     dispatch({ type: 'ON_CHANGE_ITEMS', inputValue: value });
   }, [state, dispatch]);
+
+  const timeId = setInterval(() => {
+    dispatch(getStats());
+  }, 60000);
 
   return (
     <Page>

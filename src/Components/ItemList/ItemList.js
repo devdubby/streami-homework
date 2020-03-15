@@ -4,7 +4,7 @@ import ItemTable from "./styled";
 
 function Item({ label, name, open, high, low, close, volume }) {
   const formatPrice = number => {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return number < 1 ? number : number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
   let rate = ((close - open) / open) * 100;

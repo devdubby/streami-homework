@@ -1,10 +1,9 @@
 export const getStatsWithAssets = () => {
   return async dispatch => {
     try {
-      const response_1 = await fetch("/trading-pairs/stats");
-      const response_2 = await fetch("/assets");
-      const stats = await response_1.json();
-      const assets = await response_2.json();
+      const stats = await dispatch(getStats());
+      const response = await fetch("/assets");
+      const assets = await response.json();
       dispatch(setStatsWithAssets(stats, assets));
     } catch(err) {
       console.error(err);
@@ -12,10 +11,29 @@ export const getStatsWithAssets = () => {
   }
 };
 
+export const getStats = () => {
+  return dispatch => {
+    return fetch("/trading-pairs/stats")
+    .then(response => response.json())
+    .then(data => {
+      dispatch(setStats(data));
+      return data;
+    })
+    .catch(err => console.error(err));
+  }
+}
+
 export const setStatsWithAssets = (stats, assets) => {
   return {
     type: 'SET_STATS_WITH_ASSETS',
     stats,
     assets,
+  }
+};
+
+export const setStats = (stats) => {
+  return {
+    type: 'SET_STATS',
+    stats,
   }
 };

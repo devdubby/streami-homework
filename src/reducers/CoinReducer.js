@@ -1,31 +1,42 @@
-import { SET_STATS_WITH_ASSETS, FILTER_ITEMS, ON_CHANGE_ITEMS } from "../actions/types";
+import { SET_STATS_WITH_ASSETS, FILTER_ITEMS, ON_CHANGE_ITEMS, SET_STATS } from "../actions/types";
 
 const initialState = {
   originItems: {},
   items: [],
-  filteringStr: "KRW"
+  filteringStr: "KRW",
+  stats: [],
 }
 
 const formatItems = (stats, assets) => {
-  let count = 1;
   const items = {};
   stats.forEach(stat => {
-    items[count] = stat;
-    items[count].currencyUnit = stat.name.substring(4);
+    items[stat.name] = stat;
+    items[stat.name].currencyUnit = stat.name.substring(4);
     assets.forEach(asset => {
       if(stat.name.indexOf(asset.id) === 0)
-        items[count].label = asset.name;
-    })
-    count += 1;
+        items[stat.name].label = asset.name;
+    });
   });
   return items;
+};
+
+const checkUpdatedTime = (items, stats) => {
+  const newItems = [...items];
+  items.forEach((item, index) => {
+    stats.forEach(stat => {
+      if(item.name === stat.name && item.close !== stat.close) {
+        newItems[index].close = stat.close;
+      }
+    });
+  });
+  return newItems;
 }
 
 export default (state = initialState, action) => {
   switch(action.type) {
     case SET_STATS_WITH_ASSETS:
       const { stats, assets } = action;
-      const formatedItems = formatItems(stats, assets)
+      const formatedItems = {...formatItems(stats, assets)};
       return {
         ...state,
         originItems: formatedItems,
@@ -45,6 +56,14 @@ export default (state = initialState, action) => {
       return {
         ...state,
         items: onChangeItems
+      }
+    case SET_STATS:
+      const newItems = [...checkUpdatedTime(state.items, action.stats)];
+      console.log(newItems);
+      return {
+        ...state,
+        stats: action.stats,
+        items: newItems,
       }
     default:
       return state;

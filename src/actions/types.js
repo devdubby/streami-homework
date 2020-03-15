@@ -1,3 +1,4 @@
 export const FILTER_ITEMS = "FILTER_ITEMS";
 export const ON_CHANGE_ITEMS = "ON_CHANGE_ITEMS";
 export const SET_STATS_WITH_ASSETS = "SET_STATS_WITH_ASSETS";
+export const SET_STATS = "SET_STATS";
